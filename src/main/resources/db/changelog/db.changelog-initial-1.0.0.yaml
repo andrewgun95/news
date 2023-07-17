@@ -1,0 +1,105 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1689407071-1
+      author: andreas
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password
+                  type: VARCHAR(500)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: birth
+                  type: DATE
+              - column:
+                  name: active
+                  type: BOOLEAN
+  - changeSet:
+      id: 1689407071-2
+      author: andreas
+      changes:
+        - createTable:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 1689407071-3
+      author: andreas
+      changes:
+        - createTable:
+            tableName: user_roles
+            columns:
+              - column:
+                  name: user_id
+                  type: BIGINT
+              - column:
+                  name: role_id
+                  type: BIGINT
+  - changeSet:
+      id: 1689407071-4
+      author: andreas
+      changes:
+        - addForeignKeyConstraint:
+            constraintName: fk_user_roles
+            baseTableName: user_roles
+            baseColumnNames: role_id
+            referencedTableName: roles
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: RESTRICT
+  - changeSet:
+      id: 1689407071-5
+      author: andreas
+      changes:
+        - addForeignKeyConstraint:
+            constraintName: fk_role_users
+            baseTableName: user_roles
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: RESTRICT
+  - changeSet:
+      id: 1689407071-6
+      author: andreas
+      changes:
+        - sqlFile:
+            dbms: '!h2,  oracle,  mysql, mariadb, postgresql'
+            encoding: utf8
+            endDelimiter: ;
+            relativeToChangelogFile: true
+            path: sql/v1-initialdata.sql
+            splitStatements: true
+            stripComments: true
