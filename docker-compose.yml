@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+  news-app:
+    build:
+      context: ./
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    environment:
+      - APP_PORT=8080
+      - PROFILE=dev
+      - POSTGRES_HOST=postgres-db
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=news
+      - POSTGRES_USERNAME=root
+      - POSTGRES_PASSWORD=1xylixmaF7b7rTYqqQ2Q
+    ports:
+      - '127.0.0.1:9000:8080'
+  postgres-db:
+    image: postgres:alpine
+    restart: always
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      - POSTGRES_DB=news
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=1xylixmaF7b7rTYqqQ2Q
+    ports:
+      - '5432'
+    volumes:
+      - db-data:/var/lib/postgresql/data
+volumes:
+  db-data:
+    driver: local
