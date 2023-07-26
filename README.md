@@ -4,7 +4,6 @@ PostgresSQL, Java 17 or Higher, Docker
 ## How to Run Apps
 ### Prerequisites
 1. Docker
-2. Java 17 or higher
 
 
 ### Step 1 : Build application using Docker Compose
