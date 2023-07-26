@@ -21,10 +21,10 @@ Run docker compose to start and build the application
 $ docker-compose up --build
 ```
 
-### Step 3 : Check status of the application
+### Step 2 : Check status of the application
 ```shell
 $ docker-compose ps
 ```
 
-### Step 2 : Access using Browser in this URL
+### Step 3 : Access using Browser in this URL
 http://localhost:9000/news/swagger-ui.html
