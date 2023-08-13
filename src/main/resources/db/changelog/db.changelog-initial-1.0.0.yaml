@@ -103,3 +103,86 @@ databaseChangeLog:
             path: sql/v1-initialdata.sql
             splitStatements: true
             stripComments: true
+  - changeSet:
+      id: 1691940251-1
+      author: andreas
+      changes:
+        - createTable:
+            tableName: posts
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: subject
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+  - changeSet:
+      id: 1691940251-2
+      author: andreas
+      changes:
+        - createTable:
+            tableName: comments
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: reply
+                  type: VARCHAR(1000)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: post_id
+                  type: BIGINT
+              - column:
+                  name: user_id
+                  type: BIGINT
+  - changeSet:
+      id: 1691940251-3
+      author: andreas
+      changes:
+        - addForeignKeyConstraint:
+            constraintName: fk_posts_user
+            baseTableName: posts
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: RESTRICT
+  - changeSet:
+      id: 1691940251-4
+      author: andreas
+      changes:
+        - addForeignKeyConstraint:
+            constraintName: fk_comments_user
+            baseTableName: comments
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: RESTRICT
+  - changeSet:
+      id: 1691940251-5
+      author: andreas
+      changes:
+        - addForeignKeyConstraint:
+            constraintName: fk_comments_post
+            baseTableName: comments
+            baseColumnNames: post_id
+            referencedTableName: posts
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: RESTRICT

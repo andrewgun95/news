@@ -7,7 +7,7 @@ public class BaseResponse {
 
     public static BaseResponse of(Object data, Integer status) {
         BaseResponse response = new BaseResponse();
-        response.setData(data);
+        response.setResponse(data);
         response.setStatus(status);
         return response;
     }
@@ -16,7 +16,7 @@ public class BaseResponse {
         return of(data, 200);
     }
 
-    private Object data;
+    private Object response;
 
     private Integer status;
 

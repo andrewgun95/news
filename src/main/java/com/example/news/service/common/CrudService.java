@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface CrudService<T> {
 
-    T createOrUpdate(T dto);
+    T createOrUpdate(T dto) throws DataNotFoundException;
 
     T findByOne(Long id) throws DataNotFoundException;
 

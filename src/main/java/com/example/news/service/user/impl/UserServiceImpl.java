@@ -52,10 +52,11 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public UserDTO addRole(Long userId, List<String> roleNames) throws DataNotFoundException {
-        User user = userRepository.findById(userId).orElseThrow(() -> new DataNotFoundException("User is not found"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new DataNotFoundException("User is not found."));
         List<Role> roles = roleRepository.findByNameIn(roleNames);
         if (roles.isEmpty()) {
-            throw new DataNotFoundException("Roles is not found");
+            throw new DataNotFoundException("Roles is not found.");
         }
         roles.forEach(role -> {
             if (!role.getUsers().contains(user)) {
@@ -74,7 +75,10 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public UserDTO findByOne(Long id) throws DataNotFoundException {
-        return userMapper.mapEntityToDTO(userRepository.findById(id).orElseThrow(() -> new DataNotFoundException("User is not found")));
+        return userMapper.mapEntityToDTO(
+                userRepository.findById(id)
+                        .orElseThrow(() -> new DataNotFoundException("User is not found."))
+        );
     }
 
     @Transactional(readOnly = true)
@@ -85,13 +89,23 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
-    public PageDTO<UserDTO> get(Integer page, Integer limit, String search, Collection<String> sorts) {
-        Page<User> userPage = userRepository.findAll((root, query, builder) -> builder.or( //
-                builder.like(root.get("name"), "%" + search.toLowerCase() + "%"), //
-                builder.like(root.get("email"), "%" + search.toLowerCase() + "%") //
-        ), PageMapperImpl.constructPageable(page, limit, sorts));
+    public PageDTO<UserDTO> get(Integer page, Integer limit, String search, Collection<String> sortBy) {
+        final String keyword = "%" + search.toLowerCase() + "%";
+//        // 1. Using JPA Specification
+//        Specification<User> specification = (root, query, criteria) -> null;
+//        if (StringUtils.hasText(search)) {
+//            specification = (root, query, criteria) ->
+//                    criteria.or(
+//                            criteria.like(criteria.lower(root.get("name")), keyword),
+//                            criteria.like(criteria.lower(root.get("email")), keyword)
+//                    );
+//        }
+//        Page<User> userPage = userRepository.findAll(specification, PageMapperImpl.constructPageable(page, limit, sortBy));
 
-        List<UserDTO> userDTOs = userPage.getContent().stream().map(userMapper::mapEntityToDTO).toList();
+        // 2. Using Named Query
+        Page<User> userPage = userRepository.findByNameLikeIgnoreCaseOrEmailLikeIgnoreCase(keyword, keyword, PageMapperImpl.constructPageable(page, limit, sortBy));
+
+        List<UserDTO> userDTOs = userMapper.mapEntitiesToDTOs(userPage.getContent());
         return PageMapperImpl.constructResponse(userDTOs, page, userPage.getTotalPages(), userPage.getTotalElements());
     }
 }

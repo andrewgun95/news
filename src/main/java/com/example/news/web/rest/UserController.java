@@ -28,7 +28,7 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createOrUpdate(@RequestBody @Validated UserDTO dto) {
+    public void createOrUpdate(@RequestBody @Validated UserDTO dto) throws DataNotFoundException {
         userService.createOrUpdate(dto);
     }
 
@@ -41,14 +41,19 @@ public class UserController {
 
     @GetMapping("/")
     @ResponseBody
-    public ResponseEntity<BaseResponse> getUsers(@RequestParam(value = "page", defaultValue = "0", required = false) Integer page, @RequestParam(value = "limit", defaultValue = "10", required = false) Integer limit, @RequestParam(value = "search", defaultValue = "", required = false) String search, @RequestParam(value = "sorts", defaultValue = "", required = false) Collection<String> sorts) {
+    public ResponseEntity<BaseResponse> getUsers(@RequestParam(value = "page", defaultValue = "0", required = false) Integer page,
+                                                 @RequestParam(value = "limit", defaultValue = "10", required = false) Integer limit,
+                                                 @RequestParam(value = "search", defaultValue = "", required = false) String search,
+                                                 @RequestParam(value = "sorts", defaultValue = "", required = false) Collection<String> sorts) {
         return ResponseEntity.ok(BaseResponse.of(userService.get(page, limit, search, sorts)));
     }
 
     @GetMapping(path = "/{id}")
     @ResponseBody
-    public ResponseEntity<BaseResponse> getPersonDetail(@PathVariable(name = "id") Long id) throws DataNotFoundException {
-        return ResponseEntity.ok(BaseResponse.of(userService.findByOne(id)));
+    public ResponseEntity<BaseResponse> getUserDetails(@PathVariable(name = "id") Long id) throws DataNotFoundException {
+        return ResponseEntity.ok(
+                BaseResponse.of(userService.findByOne(id))
+        );
     }
 
 }
