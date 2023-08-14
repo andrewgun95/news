@@ -186,3 +186,28 @@ databaseChangeLog:
             referencedColumnNames: id
             onDelete: CASCADE
             onUpdate: RESTRICT
+  - changeSet:
+      id: 1692001730-1
+      author: andreas
+      changes:
+        - createTable:
+            tableName: files
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: file_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: file_group
+                  type: VARCHAR(255)
+              - column:
+                  name: file_data
+                  type: BLOB
